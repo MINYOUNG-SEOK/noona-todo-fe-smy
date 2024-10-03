@@ -28,6 +28,7 @@ function App() {
       if (response.status === 200) {
         getTasks();
       }
+      console.log("성공");
       setTodoValue("");
     } catch (error) {
       console.log("error:", error);
