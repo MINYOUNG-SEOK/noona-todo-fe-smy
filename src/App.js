@@ -1,90 +1,72 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-import TodoBoard from "./components/TodoBoard";
+import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import TodoPage from "./pages/TodoPage";
+import RegisterPage from "./pages/RegisterPage";
+import PrivateRoute from "./route/PrivateRoute";
 import api from "./utils/api";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
 
 function App() {
-  const [todoList, setTodoList] = useState([]);
-  const [todoValue, setTodoValue] = useState("");
+  const [user, setUser] = useState(null);
 
-  const getTasks = async () => {
-    const response = await api.get("/tasks");
-    setTodoList(response.data.data);
+  const getUser = async () => {
+    // 토큰을 통해 유저정보를 가져온다
+    try {
+      const storedToken = sessionStorage.getItem("token");
+      if (storedToken) {
+        const response = await api.get("/user/me");
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      setUser(null);
+    }
   };
+
+  // 로그아웃 함수
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    setUser(null);
+    Navigate('/login"');
+  };
+
   useEffect(() => {
-    getTasks();
+    getUser();
   }, []);
-  const addTodo = async () => {
-    try {
-      const response = await api.post("/tasks", {
-        task: todoValue,
-        isComplete: false,
-      });
-      if (response.status === 200) {
-        getTasks();
-      }
-      console.log("성공");
-      setTodoValue("");
-    } catch (error) {
-      console.log("error:", error);
-    }
-  };
 
-  const deleteItem = async (id) => {
-    try {
-      console.log(id);
-      const response = await api.delete(`/tasks/${id}`);
-      if (response.status === 200) {
-        getTasks();
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
-  const toggleComplete = async (id) => {
-    try {
-      const task = todoList.find((item) => item._id === id);
-      const response = await api.put(`/tasks/${id}`, {
-        isComplete: !task.isComplete,
-      });
-      if (response.status === 200) {
-        getTasks();
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
   return (
-    <Container>
-      <Row className="add-item-row">
-        <Col xs={12} sm={10}>
-          <input
-            type="text"
-            placeholder="할일을 입력하세요"
-            onChange={(event) => setTodoValue(event.target.value)}
-            className="input-box"
-            value={todoValue}
-          />
-        </Col>
-        <Col xs={12} sm={2}>
-          <button onClick={addTodo} className="button-add">
-            추가
+    <div>
+      <header className="header">
+        <h1>My Todo App</h1>
+        {user ? (
+          <button onClick={handleLogout} className="btn btn-danger">
+            로그아웃
           </button>
-        </Col>
-      </Row>
+        ) : (
+          ""
+        )}
+      </header>
 
-      <TodoBoard
-        todoList={todoList}
-        deleteItem={deleteItem}
-        toggleComplete={toggleComplete}
-      />
-    </Container>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute user={user}>
+                <TodoPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/register" element={<RegisterPage />} />
+
+          <Route
+            path="/login"
+            element={<LoginPage user={user} setUser={setUser} />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
