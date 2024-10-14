@@ -50,19 +50,19 @@ const LoginPage = ({ user, setUser }) => {
         <form className="login-form" onSubmit={handleLogin}>
           <input
             type="email"
-            placeholder="Email address"
+            placeholder="이메일 주소를 입력하세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder="비밀번호를 입력하세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <div className="error-message">{error}</div>}
           <button type="submit" className="login-button">
-            Get Started
+            로그인
           </button>
         </form>
         <div className="footer">

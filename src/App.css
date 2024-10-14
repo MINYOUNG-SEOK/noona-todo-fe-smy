@@ -5,7 +5,7 @@ body {
 
 }
 
-/* .todo-item {
+.todo-item {
   border: 1px solid lightblue;
   background-color: white;
   display: flex;
@@ -104,4 +104,4 @@ button {
 
 .red-error {
   color: red;
-} */
+}
