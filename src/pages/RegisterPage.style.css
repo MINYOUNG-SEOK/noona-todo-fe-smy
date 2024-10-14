@@ -1,0 +1,119 @@
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.logo-text {
+    margin-bottom: 10px;
+}
+
+.logo-text h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #69665c;
+    position: relative;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    border: 1px solid #69665c;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 700px;
+    min-height: 400px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+.register-form h1 {
+    font-size: 2rem;
+    color: #69665c;
+    margin-bottom: 20px;
+}
+
+.register-form label {
+    color: #69665c;
+}
+
+.register-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.register-form input:focus {
+    border-color: #3e3c36;
+    outline: none;
+}
+
+.red-error {
+    color: red;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.button-register {
+    padding: 10px;
+    background-color: #69665c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-register:hover {
+    background-color: #3e3c36;
+}
+
+@media (max-width: 768px) {
+    .register-form {
+        padding: 20px;
+        min-height: 300px;
+    }
+
+    .register-form h1 {
+        font-size: 1.5rem;
+    }
+
+    .register-form input {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .button-primary {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-form {
+        padding: 15px;
+    }
+
+    .register-form h1 {
+        font-size: 1.2rem;
+    }
+
+    .register-form input {
+        padding: 6px;
+        font-size: 0.85rem;
+    }
+
+    .button-primary {
+        font-size: 0.9rem;
+    }
+}

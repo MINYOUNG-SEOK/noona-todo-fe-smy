@@ -1,14 +1,21 @@
-import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import { Link, useNavigate, Navigate } from "react-router-dom";
+import "./LoginPage.style.css";
 
 const LoginPage = ({ user, setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      document.querySelector(".logo-text").classList.add("animated");
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -32,36 +39,38 @@ const LoginPage = ({ user, setUser }) => {
   }
 
   return (
-    <div className="display-center">
-      {error && <div className="red-error">{error}</div>}
-      <Form className="login-box" onSubmit={handleLogin}>
-        <h1>로그인</h1>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
+    <div className="login-page-wrapper">
+      <div className="login-container">
+        <div className="login-header">
+          <div className="logo-text">
+            <h1>todo</h1>
+          </div>
+          <p className="subtitle">좋은 하루예요! 오늘을 계획해보러 갈까요?</p>
+        </div>
+        <form className="login-form" onSubmit={handleLogin}>
+          <input
             type="email"
-            placeholder="Enter email"
-            onChange={(event) => setEmail(event.target.value)}
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
+          <input
             type="password"
             placeholder="Password"
-            onChange={(event) => setPassword(event.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
-        </Form.Group>
-        <div className="button-box">
-          <Button type="submit" className="button-primary">
-            Login
-          </Button>
-          <span>
-            계정이 없다면? <Link to="/register">회원가입 하기</Link>
-          </span>
+          {error && <div className="error-message">{error}</div>}
+          <button type="submit" className="login-button">
+            Get Started
+          </button>
+        </form>
+        <div className="footer">
+          <p>
+            계정이 아직 없으신가요? <Link to="/register">회원가입 하기</Link>
+          </p>
         </div>
-      </Form>
+      </div>
     </div>
   );
 };

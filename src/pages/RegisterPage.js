@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/Form";
 import api from "../utils/api";
+import "./RegisterPage.style.css";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -10,7 +8,6 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [secPassword, setSectPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,8 +17,9 @@ const RegisterPage = () => {
         throw new Error("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
       }
       const response = await api.post("/user", { name, email, password });
-      if (response.status == 200) {
-        navigate("/login");
+      if (response.status === 200) {
+        // 로그인 페이지로 이동
+        window.location.href = "/login";
       } else {
         throw new Error(response.data.error);
       }
@@ -31,50 +29,60 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="display-center">
-      {error && <div className="red-error">{error}</div>}
-      <Form className="login-box" onSubmit={handleSubmit}>
+    <div className="register-container">
+      <form className="register-form" onSubmit={handleSubmit}>
         <h1>회원가입</h1>
-        <Form.Group className="mb-3" controlId="formName">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="string"
-            placeholder="Name"
+
+        <div className="form-group">
+          <label htmlFor="formName">이름</label>
+          <input
+            type="text"
+            id="formName"
+            placeholder="이름을 입력해주세요"
             onChange={(event) => setName(event.target.value)}
+            required
           />
-        </Form.Group>
+        </div>
 
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
+        <div className="form-group">
+          <label htmlFor="formBasicEmail">이메일 주소</label>
+          <input
             type="email"
-            placeholder="Enter email"
+            id="formBasicEmail"
+            placeholder="이메일 주소를 입력해주세요"
             onChange={(event) => setEmail(event.target.value)}
+            required
           />
-        </Form.Group>
+        </div>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
+        <div className="form-group">
+          <label htmlFor="formBasicPassword">비밀번호</label>
+          <input
             type="password"
-            placeholder="Password"
+            id="formBasicPassword"
+            placeholder="비밀번호를 입력해주세요"
             onChange={(event) => setPassword(event.target.value)}
+            required
           />
-        </Form.Group>
+        </div>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>re-enter the password</Form.Label>
-          <Form.Control
+        <div className="form-group">
+          <label htmlFor="formConfirmPassword">비밀번호 확인</label>
+          <input
             type="password"
-            placeholder="re-enter the password"
+            id="formConfirmPassword"
+            placeholder="비밀번호를 한번 더 입력해주세요"
             onChange={(event) => setSectPassword(event.target.value)}
+            required
           />
-        </Form.Group>
+        </div>
 
-        <Button className="button-primary" type="submit">
+        {error && <div className="red-error">{error}</div>}
+
+        <button className="button-register" type="submit">
           회원가입
-        </Button>
-      </Form>
+        </button>
+      </form>
     </div>
   );
 };

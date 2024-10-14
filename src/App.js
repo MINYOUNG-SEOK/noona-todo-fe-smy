@@ -38,7 +38,6 @@ function App() {
   return (
     <div>
       <header className="header">
-        <h1>My Todo App</h1>
         {user ? (
           <button onClick={handleLogout} className="btn btn-danger">
             로그아웃

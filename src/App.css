@@ -1,9 +1,11 @@
 body {
-  color: lightblue !important;
-  background-color: aliceblue !important;
+  background-color: #f9f9f9;
+  padding: 0;
+  margin: 0;
+
 }
 
-.todo-item {
+/* .todo-item {
   border: 1px solid lightblue;
   background-color: white;
   display: flex;
@@ -102,4 +104,4 @@ button {
 
 .red-error {
   color: red;
-}
+} */
