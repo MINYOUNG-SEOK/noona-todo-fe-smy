@@ -33,25 +33,25 @@ body {
     margin-bottom: 20px;
 }
 
-.logo-text {
+.login-logo-text {
     position: relative;
     display: inline-block;
 }
 
-.logo-text h1 {
-    font-size: 4rem;
+.login-logo-text h1 {
+    font-size: 5rem;
     font-weight: bold;
     color: #69665c;
     position: relative;
 }
 
-.logo-text::after {
+.login-logo-text::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 50%;
-    height: 4px;
+    bottom: 40%;
+    height: 6px;
     background-color: #69665c;
     transform: scaleX(0);
     transform-origin: center;
@@ -59,11 +59,11 @@ body {
     transition-delay: 0.5s;
 }
 
-.logo-text.animated::after {
+.login-logo-text.animated::after {
     transform: scaleX(1);
 }
 
-.subtitle {
+.login-subtitle {
     font-size: 1rem;
     color: #7a7a7a;
     margin-top: 10px;
@@ -89,12 +89,13 @@ body {
     outline: none;
 }
 
-.error-message {
+.login-error-message {
     color: red;
     margin-bottom: 15px;
 }
 
 .login-button {
+    width: 60%;
     padding: 10px;
     background-color: #69665c;
     color: white;
@@ -102,6 +103,7 @@ body {
     border-radius: 5px;
     font-size: 1.2rem;
     cursor: pointer;
+    margin: 20px auto 0 auto;
     transition: background-color 0.3s ease;
 }
 
@@ -109,9 +111,42 @@ body {
     background-color: #3e3c36;
 }
 
-.footer {
+.login-footer {
     margin-top: 20px;
     text-align: center;
     font-size: 0.9rem;
     color: #7a7a7a;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        padding: 20px;
+    }
+
+    .login-button {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 15px;
+    }
+
+    .login-logo-text h1 {
+        font-size: 4rem;
+    }
+
+    .login-button {
+        font-size: 0.9rem;
+    }
+
+    .login-form input {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .login-subtitle {
+        font-size: 0.85rem;
+    }
 }
