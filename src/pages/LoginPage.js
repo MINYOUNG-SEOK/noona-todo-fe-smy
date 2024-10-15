@@ -11,7 +11,7 @@ const LoginPage = ({ user, setUser }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      document.querySelector(".logo-text").classList.add("animated");
+      document.querySelector(".login-logo-text").classList.add("animated");
     }, 500);
 
     return () => clearTimeout(timer);
@@ -42,32 +42,32 @@ const LoginPage = ({ user, setUser }) => {
     <div className="login-page-wrapper">
       <div className="login-container">
         <div className="login-header">
-          <div className="logo-text">
+          <div className="login-logo-text">
             <h1>todo</h1>
           </div>
-          <p className="subtitle">좋은 하루예요! 오늘을 계획해보러 갈까요?</p>
+          <p className="login-subtitle">좋은 하루예요! 오늘을 계획해보러 갈까요?</p>
         </div>
         <form className="login-form" onSubmit={handleLogin}>
           <input
             type="email"
-            placeholder="이메일 주소를 입력하세요"
+            placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
-            placeholder="비밀번호를 입력하세요"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className="login-error-message">{error}</div>}
           <button type="submit" className="login-button">
-            로그인
+            Get started
           </button>
         </form>
-        <div className="footer">
+        <div className="login-footer">
           <p>
-            계정이 아직 없으신가요? <Link to="/register">회원가입 하기</Link>
+            Don't have An Account? <Link to="/register">Register</Link>
           </p>
         </div>
       </div>
