@@ -1,4 +1,4 @@
-.register-container {
+.register-page-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,18 +8,7 @@
     padding: 20px;
 }
 
-.logo-text {
-    margin-bottom: 10px;
-}
-
-.logo-text h1 {
-    font-size: 4rem;
-    font-weight: bold;
-    color: #69665c;
-    position: relative;
-}
-
-.register-form {
+.register-page-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -30,91 +19,104 @@
     max-width: 700px;
     min-height: 400px;
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
 }
 
-.register-form h1 {
-    font-size: 2rem;
+.register-page-form h1 {
+    font-size: 1.7rem;
     color: #69665c;
     margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
 }
 
-.register-form label {
+.register-page-form p {
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #69665c;
+}
+
+.register-form-group label {
     margin-bottom: 5px;
     color: #69665c;
 }
 
-.register-form input {
+.register-form-group input {
     width: 100%;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
     margin-bottom: 15px;
 }
 
-.register-form input:focus {
+.register-form-group input:focus {
     border-color: #3e3c36;
     outline: none;
 }
 
-.red-error {
+.register-error-message {
     color: red;
     margin-bottom: 15px;
     font-size: 0.9rem;
 }
 
-.button-register {
+.register-button {
+    width: 60%;
     padding: 10px;
     background-color: #69665c;
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 1.2rem;
-    margin-top: 10px;
+    margin: 20px auto 0 auto;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.button-register:hover {
+.register-button:hover {
     background-color: #3e3c36;
 }
 
 @media (max-width: 768px) {
-    .register-form {
-        padding: 20px;
+    .register-page-form {
         min-height: 300px;
     }
 
-    .register-form h1 {
+    .register-page-form h1 {
         font-size: 1.5rem;
     }
 
-    .register-form input {
+    .register-form-group input {
         padding: 8px;
         font-size: 0.9rem;
     }
 
-    .button-primary {
+    .register-button {
         font-size: 1rem;
     }
 }
 
 @media (max-width: 480px) {
-    .register-form {
-        padding: 15px;
+    .register-page-form {
+        padding: 30px;
     }
 
-    .register-form h1 {
+    .register-page-form h1 {
         font-size: 1.2rem;
     }
 
-    .register-form input {
+    .register-page-form p {
+        font-size: 0.8rem;
+    }
+
+    .register-form-group input {
+        height: 40px;
         padding: 6px;
         font-size: 0.85rem;
     }
 
-    .button-primary {
-        font-size: 0.9rem;
+    .register-button {
+        font-size: 0.9rem; 
     }
 }
