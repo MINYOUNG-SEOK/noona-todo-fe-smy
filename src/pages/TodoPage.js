@@ -4,13 +4,7 @@ import api from "../utils/api";
 import "./TodoPage.style.css";
 
 const TodoPage = () => {
-  const [todoList, setTodoList] = useState([
-    { _id: "1", task: "React 공부하기", isComplete: false, priority: "Low" },
-    { _id: "2", task: "운동하기", isComplete: true, priority: "Immediate" },
-    { _id: "3", task: "프로젝트 마무리", isComplete: false, priority: "High" },
-    { _id: "4", task: "영화 감상하기", isComplete: false, priority: "Normal" },
-    { _id: "5", task: "저녁 준비하기", isComplete: true, priority: "Low" },
-  ]);
+  const [todoList, setTodoList] = useState([]);
   const [todoValue, setTodoValue] = useState("");
   const [description, setDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
