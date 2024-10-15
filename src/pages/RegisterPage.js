@@ -29,58 +29,59 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-container">
-      <form className="register-form" onSubmit={handleSubmit}>
-        <h1>회원가입</h1>
+    <div className="register-page-container">
+      <form className="register-page-form" onSubmit={handleSubmit}>
+        <h1>Create Account</h1>
+        <p>Get started by creating your new account</p>
 
-        <div className="form-group">
-          <label htmlFor="formName">이름</label>
+        <div className="register-form-group">
+          <label htmlFor="formName"></label>
           <input
             type="text"
             id="formName"
-            placeholder="이름을 입력해주세요"
+            placeholder="Full Name"
             onChange={(event) => setName(event.target.value)}
             required
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="formBasicEmail">이메일 주소</label>
+        <div className="register-form-group">
+          <label htmlFor="formBasicEmail"></label>
           <input
             type="email"
             id="formBasicEmail"
-            placeholder="이메일 주소를 입력해주세요"
+            placeholder="Email Address"
             onChange={(event) => setEmail(event.target.value)}
             required
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="formBasicPassword">비밀번호</label>
+        <div className="register-form-group">
+          <label htmlFor="formBasicPassword"></label>
           <input
             type="password"
             id="formBasicPassword"
-            placeholder="비밀번호를 입력해주세요"
+            placeholder="Password"
             onChange={(event) => setPassword(event.target.value)}
             required
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="formConfirmPassword">비밀번호 확인</label>
+        <div className="register-form-group">
+          <label htmlFor="formConfirmPassword"></label>
           <input
             type="password"
             id="formConfirmPassword"
-            placeholder="비밀번호를 한번 더 입력해주세요"
+            placeholder="Confirm Password"
             onChange={(event) => setSectPassword(event.target.value)}
             required
           />
         </div>
 
-        {error && <div className="red-error">{error}</div>}
+        {error && <div className="register-error-message">{error}</div>}
 
-        <button className="button-register" type="submit">
-          회원가입
+        <button className="register-button" type="submit">
+          Register
         </button>
       </form>
     </div>
