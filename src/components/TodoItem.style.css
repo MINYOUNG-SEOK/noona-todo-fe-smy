@@ -1,15 +1,17 @@
 .todo-item {
   background-color: #fdf5d9;
-  border-radius: 10px;
-  padding: 20px;
-  width: 400px;
-  min-height: 150px;
+  border-radius: 15px;
+  padding: 15px;
+  width: 100%;
+  max-width: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
 }
+
 
 .todo-item-header {
   display: flex;
@@ -31,17 +33,21 @@
   font-weight: bold;
   cursor: pointer;
   position: relative;
+  z-index: 100;
 }
 
 .menu-dropdown {
   position: absolute;
-  top: 30px;
+  top: 50px;
   right: 0;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.2s ease;
 }
 
 .menu-dropdown button {
@@ -57,6 +63,7 @@
   background-color: #f0f0f0;
 }
 
+
 .todo-item-description {
   font-size: 14px;
   color: #666;
@@ -64,23 +71,36 @@
   padding: 0;
 }
 
+.todo-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.todo-item-priority-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+
 .todo-checkbox {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  margin-top: 10px;
 }
 
 .todo-checkbox label {
   font-weight: bold;
-  margin-right: 10px;
+  margin-right: 7px;
   line-height: 1;
 }
 
 .todo-checkbox input[type="checkbox"] {
   appearance: none;
-  width: 20px; 
-  height: 20px; 
+  width: 20px;
+  height: 20px;
   border: 2px solid #666;
   border-radius: 4px;
   position: relative;
@@ -102,7 +122,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); 
+  transform: translate(-50%, -50%);
 }
 
 .item-complete .todo-item-title,
@@ -111,95 +131,8 @@
   color: #888;
 }
 
-/* 공통 모달 스타일 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal-content {
-  width: 90%;
-  max-width: 700px;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-  
-}
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.cancel-button {
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.add-todo-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 1rem;
-  color: #333;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  background-color: #f7f7f7;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #3e3c36;
-}
-
-.form-group textarea {
-  height: 100px;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: space-between;
-}
-
-.save-button {
-  background-color: #6d6b64;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.save-button:hover {
-  background-color: #5a574f;
+@media (min-width: 1024px) {
+  .todo-item {
+    width: 100%;
+  }
 }

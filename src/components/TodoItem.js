@@ -1,102 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import TodoModal from "./TodoModal";
+import api from "../utils/api";
 import "./TodoItem.style.css";
 
-const TodoItem = ({ item, deleteItem, toggleComplete }) => {
-  const [showMenu, setShowMenu] = useState(false);
+const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editedTask, setEditedTask] = useState(item.task);
   const [editedDescription, setEditedDescription] = useState(item.description);
+  const [selectedPriority, setSelectedPriority] = useState(item.priority);
+  const [showMenu, setShowMenu] = useState(false);
 
-  const handleMenuToggle = (e) => {
-    e.stopPropagation();
-    setShowMenu(!showMenu);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (event.target.closest(".menu-dropdown, .todo-item-menu-button")) {
+        return;
+      }
+      setShowMenu(false);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleEditSave = async () => {
+    try {
+      const response = await api.put(`/tasks/${item._id}`, {
+        task: editedTask,
+        description: editedDescription,
+        priority: selectedPriority,
+      });
+
+      if (response.status === 200) {
+        setIsEditModalOpen(false);
+        getTasks();
+      }
+    } catch (error) {
+      console.log("error:", error);
+    }
   };
 
-  const handleEditClick = () => {
-    setIsEditModalOpen(true);
-    setShowMenu(false); // 메뉴 닫고 모달창 열기
-  };
-
-  const handleEditSave = () => {
-    // 여기에 수정 저장 로직 추가 (예: API 호출)
-    setIsEditModalOpen(false);
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "Immediate":
+        return "#ffcece";
+      case "High":
+        return "#d2ceff";
+      case "Normal":
+        return "#d1e5f7";
+      case "Low":
+        return "#daf2d6";
+      default:
+        return "";
+    }
   };
 
   return (
     <div className={`todo-item ${item.isComplete ? "item-complete" : ""}`}>
-      {/* 제목과 부가설명 */}
       <div className="todo-item-header">
         <div className="todo-item-title">{item.task}</div>
-        <button className="todo-item-menu-button" onClick={handleMenuToggle}>
-          &#8230; {/* 세 점 아이콘 */}
+        <button
+          className="todo-item-menu-button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowMenu(!showMenu);
+          }}
+        >
+          &#8230;
         </button>
+        {/* 메뉴 드롭다운 */}
         {showMenu && (
-          <div className="menu-dropdown">
-            <button onClick={handleEditClick}>Edit</button>
+          <div className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => {
+                setIsEditModalOpen(true); // 모달 열기
+                setShowMenu(false); // 메뉴 닫기
+              }}
+            >
+              Edit
+            </button>
             <button onClick={() => deleteItem(item._id)}>Delete</button>
           </div>
         )}
       </div>
 
-      {/* 부가설명 텍스트 */}
-      <div className="todo-item-description">
-        {item.description || "No additional description."}
-      </div>
+      <div className="todo-item-description">{item.description || ""}</div>
 
-      {/* Done 체크박스 */}
-      <div className="todo-checkbox">
-        <label>Done</label>
-        <input
-          type="checkbox"
-          checked={item.isComplete}
-          onChange={() => toggleComplete(item._id)}
-        />
+      <div className="todo-item-footer">
+        <div
+          className="todo-item-priority-circle"
+          style={{ backgroundColor: getPriorityColor(item.priority) }}
+        ></div>
+        <div className="todo-checkbox">
+          <label>Done</label>
+          <input
+            type="checkbox"
+            checked={item.isComplete}
+            onChange={() => toggleComplete(item._id)}
+          />
+        </div>
       </div>
 
       {/* 수정 모달 */}
       {isEditModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2>Edit Task</h2>
-              <button
-                className="cancel-button"
-                onClick={() => setIsEditModalOpen(false)}
-              >
-                Cancel
-              </button>
-            </div>
-
-            <div className="add-todo-form">
-              <div className="form-group">
-                <label htmlFor="title">Title</label>
-                <input
-                  type="text"
-                  id="title"
-                  placeholder="Edit task title..."
-                  value={editedTask}
-                  onChange={(e) => setEditedTask(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <textarea
-                  id="description"
-                  placeholder="Edit task description..."
-                  value={editedDescription}
-                  onChange={(e) => setEditedDescription(e.target.value)}
-                />
-              </div>
-
-              <div className="modal-buttons">
-                <button className="save-button" onClick={handleEditSave}>
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <TodoModal
+          mode="edit"
+          todoValue={editedTask}
+          setTodoValue={setEditedTask}
+          description={editedDescription}
+          setDescription={setEditedDescription}
+          selectedPriority={selectedPriority}
+          setSelectedPriority={setSelectedPriority}
+          onSave={handleEditSave}
+          onClose={() => setIsEditModalOpen(false)}
+        />
       )}
     </div>
   );
