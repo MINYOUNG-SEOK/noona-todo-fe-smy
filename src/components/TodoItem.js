@@ -75,8 +75,8 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
           <div className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => {
-                setIsEditModalOpen(true); // 모달 열기
-                setShowMenu(false); // 메뉴 닫기
+                setIsEditModalOpen(true);
+                setShowMenu(false);
               }}
             >
               Edit
