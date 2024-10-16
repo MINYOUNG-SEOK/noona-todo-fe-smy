@@ -16,7 +16,7 @@ const TodoBoard = ({ todoList, deleteItem, toggleComplete, getTasks }) => {
           />
         ))
       ) : (
-        <p>할 일이 비어있어요!</p>
+        <p>데이터가 비어있어요!😮</p>
       )}
     </div>
   );
