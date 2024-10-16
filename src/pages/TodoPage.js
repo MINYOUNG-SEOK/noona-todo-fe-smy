@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TodoBoard from "../components/TodoBoard";
 import TodoModal from "../components/TodoModal";
+import Header from "../components/Header";
 import api from "../utils/api";
 import "./TodoPage.style.css";
 
@@ -11,6 +12,7 @@ const TodoPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterPriority, setFilterPriority] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
+  const [hideDone, setHideDone] = useState(false);
 
   const getTasks = async () => {
     const response = await api.get("/tasks");
@@ -75,47 +77,64 @@ const TodoPage = () => {
   };
 
   const handleFilterPriorityClick = (priority) => {
-    setFilterPriority(priority === "All" ? "" : priority);
+    if (filterPriority === priority) {
+      setFilterPriority(""); // 같은 우선순위를 다시 클릭하면 필터 해제
+    } else {
+      setFilterPriority(priority);
+    }
   };
 
   const filteredTodoList = filterPriority
     ? todoList.filter((item) => item.priority === filterPriority)
     : todoList;
 
+  const finalTodoList = hideDone
+    ? filteredTodoList.filter((item) => !item.isComplete)
+    : filteredTodoList;
+
   return (
     <div className="todo-container">
-      <div className="todo-header">
-        <div className="todo-logo">todo</div>
+      <div className="add-task-button-area">
+        <button onClick={toggleModal} className="add-task-button">
+          Add Task
+        </button>
       </div>
-
       <div className="content-section">
-        <div className="priority-filter-list">
-          {["All", "Immediate", "High", "Normal", "Low"].map((priority) => (
-            <span
-              key={priority}
-              className={`priority-filter ${
-                filterPriority === priority ? "selected" : ""
-              }`}
-              data-priority={priority}
-              onClick={() => handleFilterPriorityClick(priority)}
-            >
-              {priority}
-            </span>
-          ))}
+        <div className="filter-area">
+          <div className="priority-filter-list">
+            {["Immediate", "High", "Normal", "Low"].map((priority) => (
+              <span
+                key={priority}
+                className={`priority-filter ${
+                  filterPriority === priority ? "selected" : ""
+                }`}
+                data-priority={priority}
+                onClick={() => handleFilterPriorityClick(priority)}
+              >
+                {priority}
+              </span>
+            ))}
+          </div>
+
+          <div className="hide-done-tasks">
+            <input
+              type="checkbox"
+              checked={hideDone}
+              onChange={() => setHideDone(!hideDone)}
+            />
+            <label>Hide Done Tasks</label>
+          </div>
         </div>
+
         <div className="task-list">
           <TodoBoard
-            todoList={filteredTodoList}
+            todoList={finalTodoList}
             deleteItem={deleteItem}
             toggleComplete={toggleComplete}
             getTasks={getTasks}
           />
         </div>
       </div>
-
-      <button onClick={toggleModal} className="add-task-button">
-        +
-      </button>
 
       {isModalOpen && (
         <TodoModal
