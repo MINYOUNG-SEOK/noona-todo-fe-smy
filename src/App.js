@@ -7,7 +7,6 @@ import TodoPage from "./pages/TodoPage";
 import RegisterPage from "./pages/RegisterPage";
 import PrivateRoute from "./route/PrivateRoute";
 import api from "./utils/api";
-import Header from "./components/Header";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -25,27 +24,19 @@ function App() {
     }
   };
 
-  // 로그아웃 함수
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    setUser(null);
-    Navigate('/login"');
-  };
-
   useEffect(() => {
     getUser();
   }, []);
 
   return (
     <div>
-      <Header user={user} handleLogout={handleLogout} />
       <BrowserRouter>
         <Routes>
           <Route
             path="/"
             element={
               <PrivateRoute user={user}>
-                <TodoPage />
+                <TodoPage user={user} setUser={setUser} />
               </PrivateRoute>
             }
           />

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import TodoBoard from "../components/TodoBoard";
 import TodoModal from "../components/TodoModal";
 import Header from "../components/Header";
 import api from "../utils/api";
 import "./TodoPage.style.css";
 
-const TodoPage = () => {
+const TodoPage = ({ user, setUser }) => {
   const [todoList, setTodoList] = useState([]);
   const [todoValue, setTodoValue] = useState("");
   const [description, setDescription] = useState("");
@@ -13,6 +14,7 @@ const TodoPage = () => {
   const [filterPriority, setFilterPriority] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
   const [hideDone, setHideDone] = useState(false);
+  const navigate = useNavigate(); // useNavigate 선언
 
   const getTasks = async () => {
     const response = await api.get("/tasks");
@@ -92,8 +94,17 @@ const TodoPage = () => {
     ? filteredTodoList.filter((item) => !item.isComplete)
     : filteredTodoList;
 
+  // 로그아웃 함수
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    setUser(null);
+    navigate("/login");
+  };
+
   return (
     <div className="todo-container">
+      <Header user={user} handleLogout={handleLogout} />
+
       <div className="add-task-button-area">
         <button onClick={toggleModal} className="add-task-button">
           Add Task
