@@ -7,12 +7,13 @@ import TodoPage from "./pages/TodoPage";
 import RegisterPage from "./pages/RegisterPage";
 import PrivateRoute from "./route/PrivateRoute";
 import api from "./utils/api";
+import Header from "./components/Header";
 
 function App() {
   const [user, setUser] = useState(null);
 
+  // 토큰을 통해 유저 정보 가져오기
   const getUser = async () => {
-    // 토큰을 통해 유저정보를 가져온다
     try {
       const storedToken = sessionStorage.getItem("token");
       if (storedToken) {
@@ -37,16 +38,7 @@ function App() {
 
   return (
     <div>
-      <header className="header">
-        {user ? (
-          <button onClick={handleLogout} className="btn btn-danger">
-            로그아웃
-          </button>
-        ) : (
-          ""
-        )}
-      </header>
-
+      <Header user={user} handleLogout={handleLogout} />
       <BrowserRouter>
         <Routes>
           <Route
