@@ -24,6 +24,7 @@
   font-size: 18px;
   font-weight: bold;
   margin: 0;
+  color: #69665c;
 }
 
 .todo-item-menu-button {
@@ -66,7 +67,7 @@
 
 .todo-item-description {
   font-size: 14px;
-  color: #666;
+  color: #69665c;
   margin: 0;
   padding: 0;
 }
@@ -89,12 +90,14 @@
 .todo-checkbox {
   display: flex;
   align-items: center;
+  color: #69665c;
 }
 
 .todo-checkbox label {
   font-weight: bold;
   margin-right: 7px;
   line-height: 1;
+  color: #69665c;
 }
 
 .todo-checkbox input[type="checkbox"] {
