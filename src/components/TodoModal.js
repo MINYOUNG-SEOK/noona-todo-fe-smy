@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./TodoModal.style.css";
 
 const TodoModal = ({
@@ -19,7 +19,7 @@ const TodoModal = ({
       setDescription(description);
       setSelectedPriority(selectedPriority);
     }
-  }, [mode, todoValue, description, selectedPriority]);
+  }, );
 
   const handleSelectedPriorityClick = (priority) => {
     setSelectedPriority((prevPriority) =>
