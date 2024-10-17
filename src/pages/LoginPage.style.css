@@ -117,9 +117,25 @@ body {
     color: #7a7a7a;
 }
 
+
+
 @media (max-width: 768px) {
     .login-container {
         padding: 20px;
+        max-width: 90%; 
+    }
+
+    .login-logo-text h1 {
+        font-size: 3.5rem; 
+    }
+
+    .login-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .login-form input {
+        padding: 12px;
+        font-size: 0.9rem;
     }
 
     .login-button {
@@ -130,22 +146,24 @@ body {
 @media (max-width: 480px) {
     .login-container {
         padding: 15px;
+        max-width: 100%; 
     }
 
     .login-logo-text h1 {
-        font-size: 4rem;
-    }
-
-    .login-button {
-        font-size: 0.9rem;
-    }
-
-    .login-form input {
-        padding: 12px;
-        font-size: 0.9rem;
+        font-size: 3rem; 
     }
 
     .login-subtitle {
         font-size: 0.85rem;
+    }
+
+    .login-form input {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    .login-button {
+        font-size: 0.9rem;
+        padding: 10px;
     }
 }
