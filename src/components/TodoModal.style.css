@@ -128,9 +128,6 @@
     left: 10px;
 }
 
-.priority-filter[data-priority="All"]::before {
-    background-color: grey;
-}
 
 .priority-modal[data-priority="Immediate"]::before {
     background-color: #ffcece;
