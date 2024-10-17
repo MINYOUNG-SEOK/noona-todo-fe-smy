@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TodoBoard from "../components/TodoBoard";
 import TodoModal from "../components/TodoModal";
 import Header from "../components/Header";
+import LoadingSpinner from "../components/LoadingSpinner";
 import api from "../utils/api";
 import "./TodoPage.style.css";
 
@@ -14,11 +15,19 @@ const TodoPage = ({ user, setUser }) => {
   const [filterPriority, setFilterPriority] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
   const [hideDone, setHideDone] = useState(false);
-  const navigate = useNavigate(); // useNavigate 선언
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const getTasks = async () => {
-    const response = await api.get("/tasks");
-    setTodoList(response.data.data);
+    setLoading(true);
+    try {
+      const response = await api.get("/tasks");
+      setTodoList(response.data.data);
+    } catch (error) {
+      console.log("error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -79,8 +88,8 @@ const TodoPage = ({ user, setUser }) => {
   };
 
   const handleFilterPriorityClick = (priority) => {
-    if (filterPriority === priority) {
-      setFilterPriority(""); // 같은 우선순위를 다시 클릭하면 필터 해제
+    if (priority === "All Tasks") {
+      setFilterPriority("");
     } else {
       setFilterPriority(priority);
     }
@@ -94,6 +103,10 @@ const TodoPage = ({ user, setUser }) => {
     ? filteredTodoList.filter((item) => !item.isComplete)
     : filteredTodoList;
 
+  const resetFilterPriority = () => {
+    setFilterPriority("");
+  };
+
   // 로그아웃 함수
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -103,62 +116,75 @@ const TodoPage = ({ user, setUser }) => {
 
   return (
     <div className="todo-container">
-      <Header user={user} handleLogout={handleLogout} />
+      <Header
+        user={user}
+        handleLogout={handleLogout}
+        getTasks={getTasks}
+        resetFilterPriority={resetFilterPriority}
+        resetHideDone={() => setHideDone(false)}
+      />
+      {loading ? (
+        <LoadingSpinner /> // 로딩 중일 때 로딩 스피너 표시
+      ) : (
+        <>
+          <div className="add-task-button-area">
+            <button onClick={toggleModal} className="add-task-button">
+              Add Task
+            </button>
+          </div>
+          <div className="content-section">
+            <div className="filter-area">
+              <div className="priority-filter-list">
+                {["All Tasks", "Immediate", "High", "Normal", "Low"].map(
+                  (priority) => (
+                    <span
+                      key={priority}
+                      className={`priority-filter ${
+                        filterPriority === priority ? "selected" : ""
+                      }`}
+                      data-priority={priority}
+                      onClick={() => handleFilterPriorityClick(priority)}
+                    >
+                      {priority}
+                    </span>
+                  )
+                )}
+              </div>
 
-      <div className="add-task-button-area">
-        <button onClick={toggleModal} className="add-task-button">
-          Add Task
-        </button>
-      </div>
-      <div className="content-section">
-        <div className="filter-area">
-          <div className="priority-filter-list">
-            {["Immediate", "High", "Normal", "Low"].map((priority) => (
-              <span
-                key={priority}
-                className={`priority-filter ${
-                  filterPriority === priority ? "selected" : ""
-                }`}
-                data-priority={priority}
-                onClick={() => handleFilterPriorityClick(priority)}
-              >
-                {priority}
-              </span>
-            ))}
+              <div className="hide-done-tasks">
+                <input
+                  type="checkbox"
+                  checked={hideDone}
+                  onChange={() => setHideDone(!hideDone)}
+                />
+                <label>Hide Done Tasks</label>
+              </div>
+            </div>
+
+            <div className="task-list">
+              <TodoBoard
+                todoList={finalTodoList}
+                deleteItem={deleteItem}
+                toggleComplete={toggleComplete}
+                getTasks={getTasks}
+              />
+            </div>
           </div>
 
-          <div className="hide-done-tasks">
-            <input
-              type="checkbox"
-              checked={hideDone}
-              onChange={() => setHideDone(!hideDone)}
+          {isModalOpen && (
+            <TodoModal
+              mode="add"
+              todoValue={todoValue}
+              setTodoValue={setTodoValue}
+              description={description}
+              setDescription={setDescription}
+              selectedPriority={selectedPriority}
+              setSelectedPriority={setSelectedPriority}
+              onSave={addTodo}
+              onClose={toggleModal}
             />
-            <label>Hide Done Tasks</label>
-          </div>
-        </div>
-
-        <div className="task-list">
-          <TodoBoard
-            todoList={finalTodoList}
-            deleteItem={deleteItem}
-            toggleComplete={toggleComplete}
-            getTasks={getTasks}
-          />
-        </div>
-      </div>
-
-      {isModalOpen && (
-        <TodoModal
-          mode="add"
-          todoValue={todoValue}
-          setTodoValue={setTodoValue}
-          description={description}
-          setDescription={setDescription}
-          selectedPriority={selectedPriority}
-          setSelectedPriority={setSelectedPriority}
-          onSave={addTodo}
-          onClose={toggleModal}
-        />
+          )}
+        </>
       )}
     </div>
   );
