@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TodoModal from "./TodoModal";
+import LoadingSpinner from "./LoadingSpinner";
 import api from "../utils/api";
 import "./TodoItem.style.css";
 
@@ -9,6 +10,7 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   const [editedDescription, setEditedDescription] = useState(item.description);
   const [selectedPriority, setSelectedPriority] = useState(item.priority);
   const [showMenu, setShowMenu] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -26,6 +28,7 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   }, []);
 
   const handleEditSave = async () => {
+    setLoading(true);
     try {
       const response = await api.put(`/tasks/${item._id}`, {
         task: editedTask,
@@ -39,6 +42,19 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
       }
     } catch (error) {
       console.log("error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setLoading(true); 
+    try {
+      await deleteItem(item._id);
+    } catch (error) {
+      console.log("error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,6 +75,10 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
 
   return (
     <div className={`todo-item ${item.isComplete ? "item-complete" : ""}`}>
+        {loading ? (
+      <LoadingSpinner /> 
+    ) : (
+      <>
       <div className="todo-item-header">
         <div className="todo-item-title">{item.task}</div>
         <button
@@ -102,6 +122,8 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
           />
         </div>
       </div>
+      </>
+    )}
 
       {/* 수정 모달 */}
       {isEditModalOpen && (
