@@ -37,6 +37,8 @@
   font-size: 1.1rem;
 }
 
+
+
 .priority-filter {
   padding: 8px 12px;
   border-radius: 20px;
@@ -61,15 +63,17 @@
   left: 10px;
 }
 
-.priority-filter[data-priority="All"] {
+.priority-filter[data-priority="All Tasks"] {
+  text-align: center;
+  justify-content: center;
   padding: 8px 12px;
   border-radius: 5px;
   font-weight: bold;
   color: #69665c;
 }
 
-.priority-filter[data-priority="All"]::before {
-  display: none;
+.priority-filter[data-priority="All tasks"]::before {
+  background-color: #ffcece;
 }
 
 .priority-filter[data-priority="Immediate"]::before {
@@ -160,6 +164,7 @@
   }
 
   .filter-area {
+    width: 100%;
     gap: 0;
     padding: 0;
   }
@@ -178,17 +183,13 @@
     justify-content: flex-start;
     overflow-x: auto;
     white-space: nowrap;
+    margin-top: 10px;
+    margin-bottom: 0;
   }
 
   .priority-filter-list::-webkit-scrollbar {
-    height: 8px;
+    height: 1px;
   }
-
-  .priority-filter-list::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 10px;
-  }
-
 
   .add-task-button-area {
     margin: 0;
@@ -203,9 +204,7 @@
   }
 
   .hide-done-tasks {
-    margin: 0;
-    margin-left: 8px;
+    margin-left: 10px;
     justify-content: flex-start;
   }
-
 }
