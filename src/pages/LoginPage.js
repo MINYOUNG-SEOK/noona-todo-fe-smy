@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import "./LoginPage.style.css";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const LoginPage = ({ user, setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +22,7 @@ const LoginPage = ({ user, setUser }) => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setLoading(true);
     try {
       const response = await api.post("/user/login", { email, password });
       if (response.status === 200) {
@@ -31,6 +35,8 @@ const LoginPage = ({ user, setUser }) => {
       throw new Error(response.message);
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,12 +46,15 @@ const LoginPage = ({ user, setUser }) => {
 
   return (
     <div className="login-page-wrapper">
-      <div className="login-container">
+      {loading && <LoadingSpinner />}
+      <div className={`login-container ${loading ? "blur" : ""}`}>
         <div className="login-header">
           <div className="login-logo-text">
             <h1>todo</h1>
           </div>
-          <p className="login-subtitle">좋은 하루예요! 오늘을 계획해보러 갈까요?</p>
+          <p className="login-subtitle">
+            좋은 하루예요! 오늘을 계획해보러 갈까요?
+          </p>
         </div>
         <form className="login-form" onSubmit={handleLogin}>
           <input
