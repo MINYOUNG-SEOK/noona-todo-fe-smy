@@ -46,8 +46,10 @@ const LoginPage = ({ user, setUser }) => {
 
   return (
     <div className="login-page-wrapper">
-      {loading && <LoadingSpinner />}
-      <div className={`login-container ${loading ? "blur" : ""}`}>
+        {loading ? (
+        <LoadingSpinner />
+      ) : (
+      <div className="login-container">
         <div className="login-header">
           <div className="login-logo-text">
             <h1>todo</h1>
@@ -80,6 +82,7 @@ const LoginPage = ({ user, setUser }) => {
           </p>
         </div>
       </div>
+          )}
     </div>
   );
 };
