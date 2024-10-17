@@ -80,26 +80,35 @@
 
 @media (max-width: 768px) {
     .register-page-form {
-        min-height: 300px;
+        padding: 30px;
+        max-width: 90%;
+        min-height: 350px;
     }
 
     .register-page-form h1 {
         font-size: 1.5rem;
     }
 
+    .register-page-form p {
+        font-size: 0.95rem;
+    }
+
     .register-form-group input {
-        padding: 8px;
+        padding: 12px;
         font-size: 0.9rem;
     }
 
     .register-button {
         font-size: 1rem;
+        padding: 12px;
     }
 }
 
 @media (max-width: 480px) {
     .register-page-form {
-        padding: 30px;
+        padding: 20px;
+        max-width: 100%; 
+        min-height: 320px;
     }
 
     .register-page-form h1 {
@@ -107,16 +116,16 @@
     }
 
     .register-page-form p {
-        font-size: 0.8rem;
+        font-size: 0.85rem; 
     }
 
     .register-form-group input {
-        height: 40px;
-        padding: 6px;
+        padding: 10px;
         font-size: 0.85rem;
     }
 
     .register-button {
-        font-size: 0.9rem; 
+        font-size: 0.9rem;
+        padding: 10px;
     }
 }
