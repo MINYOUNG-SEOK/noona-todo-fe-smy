@@ -52,6 +52,7 @@
   font-weight: bold;
   color: #69665c;
   margin-left: 10px;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
