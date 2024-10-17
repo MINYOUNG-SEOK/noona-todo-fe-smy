@@ -33,61 +33,6 @@
   margin: 0 auto;
 }
 
-.priority-filter-list {
-  width: 20%;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 15px;
-  margin-right: 20px;
-}
-
-.priority-filter {
-  padding: 8px 12px;
-  border-radius: 20px;
-  background-color: #f9f9f9;
-  color: #666;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  position: relative;
-  padding-left: 40px;
-}
-
-.priority-filter::before {
-  content: "";
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin-right: 10px;
-  position: absolute;
-  left: 10px;
-}
-
-.priority-filter[data-priority="Immediate"]::before {
-  background-color: #ffcece;
-}
-
-.priority-filter[data-priority="High"]::before {
-  background-color: #d2ceff;
-}
-
-.priority-filter[data-priority="Normal"]::before {
-  background-color: #d1e5f7;
-}
-
-.priority-filter[data-priority="Low"]::before {
-  background-color: #daf2d6;
-}
-
-.priority-filter.selected {
-  background-color: #e0e0e0;
-}
-
 .add-task-button {
   position: absolute;
   top: 20px;
@@ -104,7 +49,6 @@
   width: 80%;
 }
 
-/* New styles for TodoBoard */
 .todo-board {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -142,14 +86,6 @@
 
   .content-section {
     flex-direction: column;
-  }
-
-  .priority-filter-list {
-    width: 100%;
-    padding: 0;
-    margin: 20px auto;
-    flex-direction: row;
-    flex-wrap: wrap;
   }
 
   .task-list {
