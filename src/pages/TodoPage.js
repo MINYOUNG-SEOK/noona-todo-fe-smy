@@ -16,8 +16,10 @@ const TodoPage = ({ user, setUser }) => {
   const [selectedPriority, setSelectedPriority] = useState("");
   const [hideDone, setHideDone] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [editingTodoId, setEditingTodoId] = useState(null);
   const navigate = useNavigate();
 
+  // 할 일 목록 가져오는 함수
   const getTasks = async () => {
     setLoading(true);
     try {
@@ -34,26 +36,43 @@ const TodoPage = ({ user, setUser }) => {
     getTasks();
   }, []);
 
-  // 할 일을 추가하는 함수
-  const addTodo = async () => {
+  // 할 일을 추가하거나 수정하는 함수
+  const saveTodo = async () => {
     try {
-      const response = await api.post("/tasks", {
-        task: todoValue,
-        isComplete: false,
-        priority: selectedPriority,
-        description: description,
-      });
-      if (response.status === 200) {
-          // todoList 상태에서 바로 새 할 일 추가
-        setTodoList((prevList) => [...prevList, response.data.data]);
+      if (editingTodoId) {
+        const response = await api.put(`/tasks/${editingTodoId}`, {
+          task: todoValue,
+          description: description,
+          priority: selectedPriority,
+        });
+        if (response.status === 200) {
+          await getTasks();
+        }
+      } else {
+        const response = await api.post("/tasks", {
+          task: todoValue,
+          isComplete: false,
+          priority: selectedPriority,
+          description: description,
+        });
+        if (response.status === 200) {
+          await getTasks();
+        }
       }
-      setTodoValue("");
-      setDescription("");
-      setSelectedPriority("");
-      setIsModalOpen(false);
+      // 입력 필드 초기화 및 모달 닫기
+      resetModalState();
     } catch (error) {
       console.log("error:", error);
     }
+  };
+
+  // 할 일 추가/수정 모달 상태를 초기화하는 함수
+  const resetModalState = () => {
+    setTodoValue("");
+    setDescription("");
+    setSelectedPriority("");
+    setEditingTodoId(null);
+    setIsModalOpen(false);
   };
 
   // 할 일을 삭제하는 함수
@@ -61,8 +80,7 @@ const TodoPage = ({ user, setUser }) => {
     try {
       const response = await api.delete(`/tasks/${id}`);
       if (response.status === 200) {
-          // todoList에서 삭제된 항목만 제거
-        setTodoList((prevList) => prevList.filter((item) => item._id !== id));
+        await getTasks();
       }
     } catch (error) {
       console.log("error:", error);
@@ -89,6 +107,15 @@ const TodoPage = ({ user, setUser }) => {
   // 모달 열고 닫는 함수
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  // 할 일을 수정하는 모달 열기 함수
+  const openEditModal = (todo) => {
+    setTodoValue(todo.task);
+    setDescription(todo.description);
+    setSelectedPriority(todo.priority);
+    setEditingTodoId(todo._id);
+    setIsModalOpen(true);
   };
 
   const handleFilterPriorityClick = (priority) => {
@@ -128,7 +155,7 @@ const TodoPage = ({ user, setUser }) => {
         resetHideDone={() => setHideDone(false)}
       />
       {loading ? (
-        <LoadingSpinner /> 
+        <LoadingSpinner />
       ) : (
         <>
           <div className="add-task-button-area">
@@ -171,21 +198,22 @@ const TodoPage = ({ user, setUser }) => {
                 deleteItem={deleteItem}
                 toggleComplete={toggleComplete}
                 getTasks={getTasks}
+                openEditModal={openEditModal}
               />
             </div>
           </div>
 
           {isModalOpen && (
             <TodoModal
-              mode="add"
+              mode={editingTodoId ? "edit" : "add"}
               todoValue={todoValue}
               setTodoValue={setTodoValue}
               description={description}
               setDescription={setDescription}
               selectedPriority={selectedPriority}
               setSelectedPriority={setSelectedPriority}
-              onSave={addTodo}
-              onClose={toggleModal}
+              onSave={saveTodo}
+              onClose={resetModalState}
             />
           )}
         </>
