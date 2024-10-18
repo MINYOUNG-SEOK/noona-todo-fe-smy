@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import TodoModal from "./TodoModal";
 import api from "../utils/api";
 import "./TodoItem.style.css";
-import LoadingSpinner from "../components/LoadingSpinner";
+
 
 const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -10,7 +10,8 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   const [editedDescription, setEditedDescription] = useState(item.description);
   const [selectedPriority, setSelectedPriority] = useState(item.priority);
   const [showMenu, setShowMenu] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -28,6 +29,7 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   }, []);
 
   const handleEditSave = async () => {
+    setLoading(true);
     try {
       const response = await api.put(`/tasks/${item._id}`, {
         task: editedTask,
@@ -41,22 +43,25 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
       }
     } catch (error) {
       console.log("error:", error);
-    } 
+    }  finally {
+      setLoading(false); 
+    }
   };
 
   const handleDelete = async () => {
-    setLoading(true); 
+    if (isDeleting) return;
+    setIsDeleting(true);  
     try {
-      await deleteItem(item._id); 
-      getTasks(); 
+      await deleteItem(item._id);
     } catch (error) {
-      console.log("삭제 실패:", error);
-      alert("삭제 중 오류가 발생했습니다."); 
-    } finally {
-      setLoading(false);  
+      console.log("error:", error);
+    }  finally {
+      setIsDeleting(false); 
     }
   };
+
   
+
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "Immediate":
@@ -74,9 +79,6 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
 
   return (
     <div className={`todo-item ${item.isComplete ? "item-complete" : ""}`}>
-    {loading ? ( // 로딩 중일 때 로딩 스피너 표시
-      <LoadingSpinner />
-    ) : (
       <>
       <div className="todo-item-header">
         <div className="todo-item-title">{item.task}</div>
@@ -97,10 +99,18 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
                 setIsEditModalOpen(true);
                 setShowMenu(false);
               }}
+              disabled={loading || isDeleting} 
             >
               Edit
             </button>
-            <button onClick={handleDelete}>Delete</button> 
+            <button 
+                onClick={handleDelete} 
+                disabled={isDeleting || loading} 
+                className="delete-button"
+              >
+                {isDeleting ? "Delete..." : "Delete"} 
+              </button>
+
           </div>
         )}
       </div>
@@ -118,11 +128,12 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
             type="checkbox"
             checked={item.isComplete}
             onChange={() => toggleComplete(item._id)}
+            disabled={loading || isDeleting}  
           />
         </div>
       </div>
       </>
-    )}
+   
 
       {/* 수정 모달 */}
       {isEditModalOpen && (
