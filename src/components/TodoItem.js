@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import TodoModal from "./TodoModal";
 import api from "../utils/api";
 import "./TodoItem.style.css";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -9,6 +10,7 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   const [editedDescription, setEditedDescription] = useState(item.description);
   const [selectedPriority, setSelectedPriority] = useState(item.priority);
   const [showMenu, setShowMenu] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -43,15 +45,18 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
   };
 
   const handleDelete = async () => {
+    setLoading(true); 
     try {
-      await deleteItem(item._id);
+      await deleteItem(item._id); 
+      getTasks(); 
     } catch (error) {
-      console.log("error:", error);
-    } 
+      console.log("삭제 실패:", error);
+      alert("삭제 중 오류가 발생했습니다."); 
+    } finally {
+      setLoading(false);  
+    }
   };
-
   
-
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "Immediate":
@@ -69,6 +74,9 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
 
   return (
     <div className={`todo-item ${item.isComplete ? "item-complete" : ""}`}>
+    {loading ? ( // 로딩 중일 때 로딩 스피너 표시
+      <LoadingSpinner />
+    ) : (
       <>
       <div className="todo-item-header">
         <div className="todo-item-title">{item.task}</div>
@@ -114,7 +122,7 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
         </div>
       </div>
       </>
-   
+    )}
 
       {/* 수정 모달 */}
       {isEditModalOpen && (
