@@ -14,7 +14,7 @@ const TodoModal = ({
 }) => {
   const priorities = ["Immediate", "High", "Normal", "Low"];
   const [loading, setLoading] = useState(false);
-
+  
   useEffect(() => {
     if (mode === "edit") {
       setTodoValue(todoValue);
@@ -38,9 +38,14 @@ const TodoModal = ({
   };
 
   const handleSaveClick = async () => {
-    setLoading(true); // 저장 버튼 클릭 시 로딩 상태 시작
+    if (!todoValue.trim()) { // 제목이 비어있으면 알림창 표시
+      alert("Title is required. Please add a title.");
+      return; 
+    }
+
+    setLoading(true); 
     await onSave();
-    setLoading(false); // 저장 완료 후 로딩 상태 종료
+    setLoading(false); 
   };
 
   return (
@@ -50,12 +55,8 @@ const TodoModal = ({
           <button className="cancel-button" onClick={onClose}>
             Cancel
           </button>
-          <button
-            className="save-button"
-            onClick={handleSaveClick}
-            disabled={loading} 
-          >
-            {loading ? "Saving..." : mode === "add" ? "Add" : "Save"}
+          <button className="save-button" onClick={handleSaveClick}>
+          {loading ? "Saving..." : mode === "add" ? "Add" : "Save"}
           </button>
         </div>
 
@@ -70,7 +71,7 @@ const TodoModal = ({
               }
               value={todoValue}
               onChange={(event) => setTodoValue(event.target.value)}
-              disabled={loading} // 로딩 중일 때 입력 비활성화
+              disabled={loading}
             />
           </div>
 
@@ -85,7 +86,7 @@ const TodoModal = ({
               }
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              disabled={loading} // 로딩 중일 때 입력 비활성화
+              disabled={loading} 
             />
           </div>
 
@@ -100,6 +101,7 @@ const TodoModal = ({
                   }`}
                   data-priority={priority}
                   onClick={() => handleSelectedPriorityClick(priority)}
+                  disabled={loading}
                 >
                   {priority}
                 </span>
