@@ -114,7 +114,7 @@
 }
 
 .priority-modal.selected {
-    background-color: #eeeee5;
+    background-color: #d6d6cb;
 }
 
 .priority-modal::before {
@@ -127,7 +127,6 @@
     position: absolute;
     left: 10px;
 }
-
 
 .priority-modal[data-priority="Immediate"]::before {
     background-color: #ffcece;
