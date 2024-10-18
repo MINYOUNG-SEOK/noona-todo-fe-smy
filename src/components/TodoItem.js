@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
-import TodoModal from "./TodoModal";
-import api from "../utils/api";
 import "./TodoItem.style.css";
 
-
-const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editedTask, setEditedTask] = useState(item.task);
-  const [editedDescription, setEditedDescription] = useState(item.description);
-  const [selectedPriority, setSelectedPriority] = useState(item.priority);
+const TodoItem = ({ item, deleteItem, toggleComplete, openEditModal }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -28,39 +20,17 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
     };
   }, []);
 
-  const handleEditSave = async () => {
-    setLoading(true);
-    try {
-      const response = await api.put(`/tasks/${item._id}`, {
-        task: editedTask,
-        description: editedDescription,
-        priority: selectedPriority,
-      });
-
-      if (response.status === 200) {
-        setIsEditModalOpen(false);
-        getTasks();
-      }
-    } catch (error) {
-      console.log("error:", error);
-    }  finally {
-      setLoading(false); 
-    }
-  };
-
   const handleDelete = async () => {
     if (isDeleting) return;
-    setIsDeleting(true);  
+    setIsDeleting(true);
     try {
       await deleteItem(item._id);
     } catch (error) {
       console.log("error:", error);
-    }  finally {
-      setIsDeleting(false); 
+    } finally {
+      setIsDeleting(false);
     }
   };
-
-  
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -79,7 +49,6 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
 
   return (
     <div className={`todo-item ${item.isComplete ? "item-complete" : ""}`}>
-      <>
       <div className="todo-item-header">
         <div className="todo-item-title">{item.task}</div>
         <button
@@ -96,21 +65,16 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
           <div className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => {
-                setIsEditModalOpen(true);
+                openEditModal(item); // 수정 모달 열기
                 setShowMenu(false);
               }}
-              disabled={loading || isDeleting} 
+              disabled={isDeleting}
             >
               Edit
             </button>
-            <button 
-                onClick={handleDelete} 
-                disabled={isDeleting || loading} 
-                className="delete-button"
-              >
-                {isDeleting ? "Delete..." : "Delete"} 
-              </button>
-
+            <button onClick={handleDelete} disabled={isDeleting}>
+              {isDeleting ? "Delete..." : "Delete"}
+            </button>
           </div>
         )}
       </div>
@@ -128,27 +92,10 @@ const TodoItem = ({ item, deleteItem, toggleComplete, getTasks }) => {
             type="checkbox"
             checked={item.isComplete}
             onChange={() => toggleComplete(item._id)}
-            disabled={loading || isDeleting}  
+            disabled={isDeleting}
           />
         </div>
       </div>
-      </>
-   
-
-      {/* 수정 모달 */}
-      {isEditModalOpen && (
-        <TodoModal
-          mode="edit"
-          todoValue={editedTask}
-          setTodoValue={setEditedTask}
-          description={editedDescription}
-          setDescription={setEditedDescription}
-          selectedPriority={selectedPriority}
-          setSelectedPriority={setSelectedPriority}
-          onSave={handleEditSave}
-          onClose={() => setIsEditModalOpen(false)}
-        />
-      )}
     </div>
   );
 };
