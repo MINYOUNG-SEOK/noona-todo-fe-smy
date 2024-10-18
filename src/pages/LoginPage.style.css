@@ -1,17 +1,17 @@
 html,
 body {
     height: 100%;
-    margin: 10px;
+    margin: 0; 
     padding: 0;
 }
-
 .login-page-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
     background-color: #f9f9f9;
-    
+    overflow: hidden;
+    margin: auto 10px; 
 }
 
 .login-container {
@@ -121,15 +121,9 @@ body {
 
 
 @media (max-width: 768px) {
-    body {
-        height: 100%;
-        padding: 0;
-        overflow: hidden;
-    }
     .login-container {
         padding: 20px;
         max-width: 90%; 
-      
     }
 
     .login-logo-text h1 {
