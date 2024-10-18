@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./TodoModal.style.css";
 
 const TodoModal = ({
@@ -13,13 +13,23 @@ const TodoModal = ({
   onClose,
 }) => {
   const priorities = ["Immediate", "High", "Normal", "Low"];
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (mode === "edit") {
       setTodoValue(todoValue);
       setDescription(description);
       setSelectedPriority(selectedPriority);
     }
-  }, );
+  }, [
+    mode,
+    todoValue,
+    description,
+    selectedPriority,
+    setTodoValue,
+    setDescription,
+    setSelectedPriority,
+  ]);
 
   const handleSelectedPriorityClick = (priority) => {
     setSelectedPriority((prevPriority) =>
@@ -27,8 +37,10 @@ const TodoModal = ({
     );
   };
 
-  const handleSaveClick = () => {
-    onSave();
+  const handleSaveClick = async () => {
+    setLoading(true); // 저장 버튼 클릭 시 로딩 상태 시작
+    await onSave();
+    setLoading(false); // 저장 완료 후 로딩 상태 종료
   };
 
   return (
@@ -38,8 +50,12 @@ const TodoModal = ({
           <button className="cancel-button" onClick={onClose}>
             Cancel
           </button>
-          <button className="save-button" onClick={handleSaveClick}>
-            {mode === "add" ? "Add" : "Save"}
+          <button
+            className="save-button"
+            onClick={handleSaveClick}
+            disabled={loading} 
+          >
+            {loading ? "Saving..." : mode === "add" ? "Add" : "Save"}
           </button>
         </div>
 
@@ -54,6 +70,7 @@ const TodoModal = ({
               }
               value={todoValue}
               onChange={(event) => setTodoValue(event.target.value)}
+              disabled={loading} // 로딩 중일 때 입력 비활성화
             />
           </div>
 
@@ -68,6 +85,7 @@ const TodoModal = ({
               }
               value={description}
               onChange={(event) => setDescription(event.target.value)}
+              disabled={loading} // 로딩 중일 때 입력 비활성화
             />
           </div>
 
