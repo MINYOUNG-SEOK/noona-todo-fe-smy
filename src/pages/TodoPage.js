@@ -67,18 +67,20 @@ const TodoPage = ({ user, setUser }) => {
     }
   };
 
-  // 할 일의 완료 상태를 변경하는 함수
+  // 할 일의 완료 상태를 변경하는 함수 : UI에서 완료 상태 업데이트 후 비동기 API 요청으로 백엔드 동기화 처리
   const toggleComplete = async (id) => {
+    setTodoList((prevList) =>
+      prevList.map((item) =>
+        item._id === id ? { ...item, isComplete: !item.isComplete } : item
+      )
+    );
     try {
       const task = todoList.find((item) => item._id === id);
-      const response = await api.put(`/tasks/${id}`, {
+      await api.put(`/tasks/${id}`, {
         isComplete: !task.isComplete,
       });
-      if (response.status === 200) {
-        getTasks();
-      }
     } catch (error) {
-      console.log("error:", error);
+      console.log("Error toggling complete status:", error);
     }
   };
 
@@ -124,7 +126,7 @@ const TodoPage = ({ user, setUser }) => {
         resetHideDone={() => setHideDone(false)}
       />
       {loading ? (
-        <LoadingSpinner /> // 로딩 중일 때 로딩 스피너 표시
+        <LoadingSpinner /> 
       ) : (
         <>
           <div className="add-task-button-area">
