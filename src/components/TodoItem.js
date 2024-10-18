@@ -50,7 +50,7 @@ const TodoItem = ({ item, deleteItem, toggleComplete, openEditModal }) => {
   return (
     <div className={`todo-item ${item.isComplete ? "item-complete" : ""}`}>
       <div className="todo-item-header">
-        <div className="todo-item-title">{item.task}</div>
+        <div className="todo-item-title">{item.task} (by {item.author.name})</div>
         <button
           className="todo-item-menu-button"
           onClick={(e) => {
