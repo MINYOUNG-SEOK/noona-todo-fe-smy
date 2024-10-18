@@ -44,7 +44,8 @@ const TodoPage = ({ user, setUser }) => {
         description: description,
       });
       if (response.status === 200) {
-        getTasks();
+          // todoList 상태에서 바로 새 할 일 추가
+        setTodoList((prevList) => [...prevList, response.data.data]);
       }
       setTodoValue("");
       setDescription("");
@@ -60,7 +61,8 @@ const TodoPage = ({ user, setUser }) => {
     try {
       const response = await api.delete(`/tasks/${id}`);
       if (response.status === 200) {
-        getTasks();
+          // todoList에서 삭제된 항목만 제거
+        setTodoList((prevList) => prevList.filter((item) => item._id !== id));
       }
     } catch (error) {
       console.log("error:", error);
