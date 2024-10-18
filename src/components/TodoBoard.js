@@ -2,7 +2,13 @@ import React from "react";
 import "./TodoBoard.style.css";
 import TodoItem from "./TodoItem";
 
-const TodoBoard = ({ todoList, deleteItem, toggleComplete, getTasks,openEditModal  }) => {
+const TodoBoard = ({
+  todoList,
+  deleteItem,
+  toggleComplete,
+  getTasks,
+  openEditModal,
+}) => {
   return (
     <div className="todo-board">
       {todoList.length > 0 ? (
@@ -14,7 +20,6 @@ const TodoBoard = ({ todoList, deleteItem, toggleComplete, getTasks,openEditModa
             toggleComplete={toggleComplete}
             getTasks={getTasks}
             openEditModal={openEditModal}
-            
           />
         ))
       ) : (
