@@ -15,7 +15,7 @@ const TodoPage = ({ user, setUser }) => {
   const [selectedPriority, setSelectedPriority] = useState("");
   const [hideDone, setHideDone] = useState(false);
   const [completionPercentage, setCompletionPercentage] = useState(0);
-  const navigate = useNavigate(); // useNavigate 선언
+  const navigate = useNavigate();
 
   const getTasks = async () => {
     const response = await api.get("/tasks");
@@ -26,6 +26,10 @@ const TodoPage = ({ user, setUser }) => {
   useEffect(() => {
     getTasks();
   }, []);
+
+  useEffect(() => {
+    calculateCompletionPercentage(todoList);
+  }, [todoList]);
 
   const calculateCompletionPercentage = (tasks) => {
     if (tasks.length === 0) {
@@ -73,22 +77,21 @@ const TodoPage = ({ user, setUser }) => {
   // 할 일의 완료 상태를 변경하는 함수
   const toggleComplete = async (id) => {
     try {
-      const taskIndex = todoList.findIndex((item) => item._id === id);
-      if (taskIndex === -1) return;
+      const updatedList = todoList.map((item) =>
+        item._id === id ? { ...item, isComplete: !item.isComplete } : item
+      );
 
-      const updatedList = [...todoList];
-      updatedList[taskIndex].isComplete = !updatedList[taskIndex].isComplete;
+      setTodoList(updatedList); // 바로 UI 업데이트
 
       const response = await api.put(`/tasks/${id}`, {
-        isComplete: updatedList[taskIndex].isComplete,
+        isComplete: updatedList.find((item) => item._id === id).isComplete,
       });
 
-      if (response.status === 200) {
-        setTodoList(updatedList);
-        calculateCompletionPercentage(updatedList);
+      if (response.status !== 200) {
+        setTodoList(todoList);
       }
     } catch (error) {
-      console.log("error:", error);
+      console.log("Error toggling complete:", error);
     }
   };
 
