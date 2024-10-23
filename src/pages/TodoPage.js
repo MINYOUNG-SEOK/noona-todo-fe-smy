@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import TodoBoard from "../components/TodoBoard";
 import TodoModal from "../components/TodoModal";
 import Header from "../components/Header";
-import LoadingSpinner from "../components/LoadingSpinner";
 import api from "../utils/api";
 import "./TodoPage.style.css";
 
@@ -15,64 +14,48 @@ const TodoPage = ({ user, setUser }) => {
   const [filterPriority, setFilterPriority] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
   const [hideDone, setHideDone] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [editingTodoId, setEditingTodoId] = useState(null);
-  const navigate = useNavigate();
+  const [completionPercentage, setCompletionPercentage] = useState(0);
+  const navigate = useNavigate(); // useNavigate 선언
 
-  // 할 일 목록 가져오는 함수
   const getTasks = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get("/tasks");
-      setTodoList(response.data.data);
-    } catch (error) {
-      console.log("error:", error);
-    } finally {
-      setLoading(false);
-    }
+    const response = await api.get("/tasks");
+    setTodoList(response.data.data);
+    calculateCompletionPercentage(response.data.data);
   };
 
   useEffect(() => {
     getTasks();
   }, []);
 
-  // 할 일을 추가하거나 수정하는 함수
-  const saveTodo = async () => {
+  const calculateCompletionPercentage = (tasks) => {
+    if (tasks.length === 0) {
+      setCompletionPercentage(0);
+      return;
+    }
+    const completedTasks = tasks.filter((task) => task.isComplete).length;
+    const percentage = Math.round((completedTasks / tasks.length) * 100);
+    setCompletionPercentage(percentage);
+  };
+
+  // 할 일을 추가하는 함수
+  const addTodo = async () => {
     try {
-      if (editingTodoId) {
-        const response = await api.put(`/tasks/${editingTodoId}`, {
-          task: todoValue,
-          description: description,
-          priority: selectedPriority,
-        });
-        if (response.status === 200) {
-          await getTasks();
-        }
-      } else {
-        const response = await api.post("/tasks", {
-          task: todoValue,
-          isComplete: false,
-          priority: selectedPriority,
-          description: description,
-        });
-        if (response.status === 200) {
-          await getTasks();
-        }
+      const response = await api.post("/tasks", {
+        task: todoValue,
+        isComplete: false,
+        priority: selectedPriority,
+        description: description,
+      });
+      if (response.status === 200) {
+        getTasks();
       }
-      // 입력 필드 초기화 및 모달 닫기
-      resetModalState();
+      setTodoValue("");
+      setDescription("");
+      setSelectedPriority("");
+      setIsModalOpen(false);
     } catch (error) {
       console.log("error:", error);
     }
-  };
-
-  // 할 일 추가/수정 모달 상태를 초기화하는 함수
-  const resetModalState = () => {
-    setTodoValue("");
-    setDescription("");
-    setSelectedPriority("");
-    setEditingTodoId(null);
-    setIsModalOpen(false);
   };
 
   // 할 일을 삭제하는 함수
@@ -80,27 +63,25 @@ const TodoPage = ({ user, setUser }) => {
     try {
       const response = await api.delete(`/tasks/${id}`);
       if (response.status === 200) {
-        await getTasks();
+        getTasks();
       }
     } catch (error) {
       console.log("error:", error);
     }
   };
 
-  // 할 일의 완료 상태를 변경하는 함수 : UI에서 완료 상태 업데이트 후 비동기 API 요청으로 백엔드 동기화 처리
+  // 할 일의 완료 상태를 변경하는 함수
   const toggleComplete = async (id) => {
-    setTodoList((prevList) =>
-      prevList.map((item) =>
-        item._id === id ? { ...item, isComplete: !item.isComplete } : item
-      )
-    );
     try {
       const task = todoList.find((item) => item._id === id);
-      await api.put(`/tasks/${id}`, {
+      const response = await api.put(`/tasks/${id}`, {
         isComplete: !task.isComplete,
       });
+      if (response.status === 200) {
+        getTasks();
+      }
     } catch (error) {
-      console.log("Error toggling complete status:", error);
+      console.log("error:", error);
     }
   };
 
@@ -109,18 +90,9 @@ const TodoPage = ({ user, setUser }) => {
     setIsModalOpen(!isModalOpen);
   };
 
-  // 할 일을 수정하는 모달 열기 함수
-  const openEditModal = (todo) => {
-    setTodoValue(todo.task);
-    setDescription(todo.description);
-    setSelectedPriority(todo.priority);
-    setEditingTodoId(todo._id);
-    setIsModalOpen(true);
-  };
-
   const handleFilterPriorityClick = (priority) => {
-    if (priority === "All Tasks") {
-      setFilterPriority("");
+    if (filterPriority === priority) {
+      setFilterPriority(""); // 같은 우선순위를 다시 클릭하면 필터 해제
     } else {
       setFilterPriority(priority);
     }
@@ -134,10 +106,6 @@ const TodoPage = ({ user, setUser }) => {
     ? filteredTodoList.filter((item) => !item.isComplete)
     : filteredTodoList;
 
-  const resetFilterPriority = () => {
-    setFilterPriority("");
-  };
-
   // 로그아웃 함수
   const handleLogout = () => {
     sessionStorage.removeItem("token");
@@ -147,76 +115,67 @@ const TodoPage = ({ user, setUser }) => {
 
   return (
     <div className="todo-container">
-      <Header
-        user={user}
-        handleLogout={handleLogout}
-        getTasks={getTasks}
-        resetFilterPriority={resetFilterPriority}
-        resetHideDone={() => setHideDone(false)}
-      />
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <>
-          <div className="add-task-button-area">
-            <button onClick={toggleModal} className="add-task-button">
-              Add Task
-            </button>
-          </div>
-          <div className="content-section">
-            <div className="filter-area">
-              <div className="priority-filter-list">
-                {["All Tasks", "Immediate", "High", "Normal", "Low"].map(
-                  (priority) => (
-                    <span
-                      key={priority}
-                      className={`priority-filter ${
-                        filterPriority === priority ? "selected" : ""
-                      }`}
-                      data-priority={priority}
-                      onClick={() => handleFilterPriorityClick(priority)}
-                    >
-                      {priority}
-                    </span>
-                  )
-                )}
-              </div>
+      <Header user={user} handleLogout={handleLogout} />
 
-              <div className="hide-done-tasks">
-                <input
-                  type="checkbox"
-                  checked={hideDone}
-                  onChange={() => setHideDone(!hideDone)}
-                />
-                <label>Hide Done Tasks</label>
-              </div>
-            </div>
+      <div className="completion-percentage">
+        <span className="percentage-value">{`${completionPercentage}%`}</span>
+        <span className="percentage-text"> 달성</span>
+      </div>
 
-            <div className="task-list">
-              <TodoBoard
-                todoList={finalTodoList}
-                deleteItem={deleteItem}
-                toggleComplete={toggleComplete}
-                getTasks={getTasks}
-                openEditModal={openEditModal}
-              />
-            </div>
+      <div className="add-task-button-area">
+        <button onClick={toggleModal} className="add-task-button">
+          Add Task
+        </button>
+      </div>
+      <div className="content-section">
+        <div className="filter-area">
+          <div className="priority-filter-list">
+            {["Immediate", "High", "Normal", "Low"].map((priority) => (
+              <span
+                key={priority}
+                className={`priority-filter ${
+                  filterPriority === priority ? "selected" : ""
+                }`}
+                data-priority={priority}
+                onClick={() => handleFilterPriorityClick(priority)}
+              >
+                {priority}
+              </span>
+            ))}
           </div>
 
-          {isModalOpen && (
-            <TodoModal
-              mode={editingTodoId ? "edit" : "add"}
-              todoValue={todoValue}
-              setTodoValue={setTodoValue}
-              description={description}
-              setDescription={setDescription}
-              selectedPriority={selectedPriority}
-              setSelectedPriority={setSelectedPriority}
-              onSave={saveTodo}
-              onClose={resetModalState}
+          <div className="hide-done-tasks">
+            <input
+              type="checkbox"
+              checked={hideDone}
+              onChange={() => setHideDone(!hideDone)}
             />
-          )}
-        </>
+            <label>Hide Done Tasks</label>
+          </div>
+        </div>
+
+        <div className="task-list">
+          <TodoBoard
+            todoList={finalTodoList}
+            deleteItem={deleteItem}
+            toggleComplete={toggleComplete}
+            getTasks={getTasks}
+          />
+        </div>
+      </div>
+
+      {isModalOpen && (
+        <TodoModal
+          mode="add"
+          todoValue={todoValue}
+          setTodoValue={setTodoValue}
+          description={description}
+          setDescription={setDescription}
+          selectedPriority={selectedPriority}
+          setSelectedPriority={setSelectedPriority}
+          onSave={addTodo}
+          onClose={toggleModal}
+        />
       )}
     </div>
   );
