@@ -73,12 +73,19 @@ const TodoPage = ({ user, setUser }) => {
   // 할 일의 완료 상태를 변경하는 함수
   const toggleComplete = async (id) => {
     try {
-      const task = todoList.find((item) => item._id === id);
+      const taskIndex = todoList.findIndex((item) => item._id === id);
+      if (taskIndex === -1) return;
+
+      const updatedList = [...todoList];
+      updatedList[taskIndex].isComplete = !updatedList[taskIndex].isComplete;
+
       const response = await api.put(`/tasks/${id}`, {
-        isComplete: !task.isComplete,
+        isComplete: updatedList[taskIndex].isComplete,
       });
+
       if (response.status === 200) {
-        getTasks();
+        setTodoList(updatedList);
+        calculateCompletionPercentage(updatedList);
       }
     } catch (error) {
       console.log("error:", error);
