@@ -37,8 +37,6 @@
   font-size: 1.1rem;
 }
 
-
-
 .priority-filter {
   padding: 8px 12px;
   border-radius: 20px;
@@ -63,17 +61,15 @@
   left: 10px;
 }
 
-.priority-filter[data-priority="All Tasks"] {
-  text-align: center;
-  justify-content: center;
+.priority-filter[data-priority="All"] {
   padding: 8px 12px;
   border-radius: 5px;
   font-weight: bold;
   color: #69665c;
 }
 
-.priority-filter[data-priority="All tasks"]::before {
-  background-color: #ffcece;
+.priority-filter[data-priority="All"]::before {
+  display: none;
 }
 
 .priority-filter[data-priority="Immediate"]::before {
@@ -158,13 +154,31 @@
 }
 
 
+.completion-percentage {
+  font-size: 1.7rem;
+  color: #69665c;
+  font-weight: bold;
+  margin: 30px 0 -50px 50px;
+}
+
+.percentage-value {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.percentage-text {
+  font-size: 1.2rem;
+  color: #69665c;
+  margin-left: 5px;
+}
+
+
 @media (max-width: 768px) {
   .todo-container {
     padding: 0 0 20px 0;
   }
 
   .filter-area {
-    width: 100%;
     gap: 0;
     padding: 0;
   }
@@ -183,13 +197,17 @@
     justify-content: flex-start;
     overflow-x: auto;
     white-space: nowrap;
-    margin-top: 10px;
-    margin-bottom: 0;
   }
 
   .priority-filter-list::-webkit-scrollbar {
-    height: 1px;
+    height: 8px;
   }
+
+  .priority-filter-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+
 
   .add-task-button-area {
     margin: 0;
@@ -204,7 +222,24 @@
   }
 
   .hide-done-tasks {
-    margin-left: 10px;
+    margin: 0;
+    margin-left: 8px;
     justify-content: flex-start;
   }
+
+  .completion-percentage {
+    color: #69665c;
+    font-weight: bold;
+    margin: 20px 0 -70px 10px;
+  }
+
+  .percentage-value {
+    font-size: 1.5rem;
+  }
+
+  .percentage-text {
+    font-size: 1rem;
+  }
+
+
 }
