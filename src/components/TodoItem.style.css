@@ -111,6 +111,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .todo-checkbox input[type="checkbox"]:checked {
